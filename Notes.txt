@@ -1,0 +1,85 @@
+the balance of the 2 classes needs to be established. The dataset is imbalanced. The majority class is far bigger than our minority class. 
+The majority class is the businesses that did not bankrupt.
+the positive class is the class that is associated with yes and the negative class is vice versa.
+In this case, The positive class (+) is that the company will go bankrupt. The negative class is that the company will not go bankrupt.
+
+I inspected feature 27, which is the profit on operating activities / financial expenses
+companies that make no profit will have a value of 0 or negative
+companies that makes some profit but are in the red will range from 0.1 to 1
+companies that are in the green will have values greater than 1
+the box plot is not informative.
+
+a describtion of the feature reveals that most of the companies have a profit to expenses ratio between 0 and 5.
+The mean is far greater than the median because the max values are so great in comparision to the companies in the 25th to 75th percentile.
+This means the data is skewed because of the vast difference between the mean and the median.
+so these companies that are super profitable are outliers and they need to be removed
+
+Analyzing feature 19, gross profit/ Sales reveals that the data is also skewed. Same with feature 1
+
+    The heatmap showed that there is a lot of correlation between the features of the dataset.
+
+    The EDA revealed that we have imbalanced data. Next we have missing values and a lot of the features are skewed.
+    Lastly, we have a lot of autocorrelatin issues with the dataset so a linear model would not be the best.
+
+The data was split before resampling to make sure that it is original data that the model is tested on. 
+The training data is resampled because the data is imbalanced.
+There are 2 types of resampling techniques: oversampling and undersampling.
+Undersampling: 
+1. take a random sample from the dataset
+2. the dataset takes all the samples in the minority class and then takes an equal number of samples from the negative class.
+3. This creates an equal and balanced dataset.
+4. there are problems with under-sampling: we lose a l.ot of data points that could contain valuable information for model performance.
+there's just not enough information in the data to be sure of the result.
+Over-sampling:
+Take the minority class sample and duplicate it till it is equal in number to the majority class.
+
+Baseline
+The baseline will be very high for the imbalanced dataset. for instance, the baseline is 95% because 95% of the data is the negative class.
+these accuracy scores don't matter unless they're beating the baseline.
+
+Iterate
+We build 3 models because we have 3 versions of our data. The undersampled, oversampled and original data.
+since there is missing data, an imputer will be used.
+the strategy for imputing missing data is decided on by the skewness of the data.
+
+Iterate (Random forest classifier)
+Random Forest
+The performance of a single decision tree will be limited. Instead of relying on one tree, a better approach is to aggregate the predictions of multiple trees. On average, aggregation will perform better than a single predictor. You can envision the aggregation as mimicking the idea of "wisdom of the crowd." We call a tree based model that aggregates the predictions of multiple trees a random forest.
+
+In order for a random forest to be effective, the model needs a diverse collection of trees. There should be variations in the chosen thresholds for splitting and the number of nodes and branches. There is no point in aggregating the predicted results if all the trees are nearly identical and produce the same result. There is no "wisdom of the crowd" if everyone thinks alike. To achieve a diverse set of trees, we need to:
+
+Train each tree in the forest using a different subset of the training set.
+Only consider a subset of features when deciding how to split the nodes.
+On the first point, we would ideally generate a new training set for each tree. However, oftentimes it's too difficult or expensive to collect more data, so we have to make do with what we have. Bootstrapping is a general statistical technique to generate "new" data sets with a single set by random sampling with replacement. Sampling with replacement allows for a data point to be sampled more than once.
+
+Typically, when training the standard decision tree model, the algorithm will consider all features in deciding the node split. Considering only a subset of your features ensures that your trees do not resemble each other. If the algorithm had considered all features, a dominant feature would be continuously chosen for node splits.
+
+
+Iterate(Gradient boosting trees)
+Gradient boosting trees is another ensemble model. It uses a collection of tree models arranged in a sequence. Here, the model is built stage-wise; each additional tree aims to correct the previous tree's incorrect.
+
+Where does the name gradient in gradient boosting trees come from? Gradient descent is a minimization algorithm that updates/improves the current answer by taking a step in the direction of minimizing the loss function. This is the same as the gradient boosting trees algorithm as it adds trees to minimize loss/improve model performance. The term boosting refers to the algorithm's ability to combine multiple weak models in sequence to form a stronger model.
+
+Gradient boosting trees have a similar set of hyperparameters as random forests but with some key additions.
+The learning rate determines how much each tree affect the final outcome and is very important in model convergence. Thus it should be considered during hyperparameter tuning to improve model performance.
+
+Evaluate
+compare the accuracy for all three different models
+The regular and oversampled model performed the best but neither beat the baseline.
+Moving forward, i will use the oversampled model.
+Confusion Matrix
+Accuracy score may not provide enough information to assess how a model is performing because it only gives us an overall score. Also, imbalanced data can lead to a high accuracy score even when a model isn't particularly useful. If we want to know what fraction of all positive predictions were correct and what fraction of positive observations did we identify, we can use a confusion matrix.
+A confusion matrix is a table summarizing the performance of the model by enumerating true and false positives and the true and false negatives.
+
+Feature importance
+The most important feature in the model is feature 26.
+which is (net profit + depreciation) / total liabilities, the solvency ratio
+This helps assess a company's ability to meet its long term financial obligations.
+a high solvency ratio shows that a company can remain financially stable in the long term.
+
+Save model
+Contexts for saving model.
+in case you want to share the model or you want to call it more than once. this way you don't have to run the model over and over when yopu want to use it.
+
+The model moving forward will be to use a random forest model on the over sampled data.
+
